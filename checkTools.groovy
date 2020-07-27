@@ -7,6 +7,7 @@ node {
     def gitHome
     def nodeJSHome
     def sonarScannerHome
+    def dockerHome
     
     stage('Preparation') {
         jdk8Home = tool 'Jdk8'
@@ -17,6 +18,7 @@ node {
         gitHome = tool 'Git'
         nodeJSHome = tool 'NodeJs'
         sonarScannerHome = tool 'SonarScanner'
+        dockerHome = tool 'Docker'
     }
     
     stage('Check Java') {
@@ -70,5 +72,15 @@ node {
             bat(/"${sonarScannerHome}\bin\sonar-scanner" -v/)
         }
     }
+    
+    /*
+    stage('Check Docker') {
+      // Run the maven build
+      if (isUnix()) {
+         sh "'${dockerHome}/docker' info"
+      } else {
+         bat(/"${dockerHome}\docker" info/)
+      }
+   }*/
     
 }
