@@ -4,8 +4,15 @@ pipeline {
    parameters {
         // choices are a string of newline separated values
 		// https://issues.jenkins-ci.org/browse/JENKINS-41180
-		string(name: 'PROJECT_ROOT_DIR', defaultValue: "D://Programacion//repos//Bitbucket//activemq")
-		string(name: 'M2_REPO', defaultValue: "D://Programacion//.m2//repository//")
+		
+		// Unix
+	    string(name: 'PROJECT_ROOT_DIR', defaultValue: "/home//alex/Documents/ws-sts/Bitbucket/activemq/")
+		string(name: 'M2_REPO', defaultValue: "/home/alex/.m2/repository/")
+		
+		// Windows
+		//string(name: 'PROJECT_ROOT_DIR', defaultValue: "D://Programacion//repos//Bitbucket//activemq")
+		//string(name: 'M2_REPO', defaultValue: "D://Programacion//.m2//repository//")
+		
 		choice(
 			choices: 'true\nfalse',
 			description: 'Indica si ejecuta el stage Build',
@@ -42,8 +49,14 @@ pipeline {
 			   expression { params.BUILD == 'true' }
 		   }
 	       steps {
-	           cleanWs()
-    	       bat(/(robocopy ${params.PROJECT_ROOT_DIR} . -e -xd .git .gradle .settings .scannerwork target -xf .classpath .project)^& IF %ERRORLEVEL% LSS 8 exit 0 /)
+	           script {
+	               cleanWs()
+    	           if (isUnix()) {
+    	               sh "rsync -av --progress '${params.PROJECT_ROOT_DIR}' '${WORKSPACE}' --exclude .git --exclude .settings --exclude target"
+    	           } else {
+    	               bat(/(robocopy ${params.PROJECT_ROOT_DIR} . -e -xd .git .gradle .settings .scannerwork target -xf .classpath .project)^& IF %ERRORLEVEL% LSS 8 exit 0 /)
+    	           }
+	           }
 	       }
 	   }
 	   
@@ -58,7 +71,13 @@ pipeline {
 			            expression { params.TEST == 'true' }
 			        }
 			        steps {
-			            bat(/mvn clean install -Dmaven.repo.local=${params.M2_REPO}/)
+			            script {
+			                if (isUnix()) {
+    			                sh "mvn clean install -Dmaven.repo.local='${params.M2_REPO}'"
+    			            } else {
+    			                bat(/mvn clean install -Dmaven.repo.local=${params.M2_REPO}/)
+    			            }
+			            }
 			        }
 			        
 			        //post {
@@ -73,7 +92,13 @@ pipeline {
 			            expression { params.TEST == 'false' }
 			        }
 			        steps {
-			            bat(/mvn clean install -DskipTests -Dmaven.repo.local=${params.M2_REPO}/)
+			            script {
+			                if (isUnix()) {
+    			                sh "mvn clean install -DskipTests -Dmaven.repo.local='${params.M2_REPO}'"
+    			            } else {
+    			                bat(/mvn clean install -DskipTests -Dmaven.repo.local=${params.M2_REPO}/)
+    			            }
+			            }
 			        }
 			    }
 		   }
@@ -86,7 +111,11 @@ pipeline {
 	       steps {
 	           script {
     	           def scannerHome = tool 'SonarScanner'
-    	           bat(/${scannerHome}\bin\sonar-scanner/)
+    	           if (isUnix()) {
+    	               sh "'${scannerHome}'/bin/sonar-scanner"   
+    	           } else {
+    	               bat(/${scannerHome}\bin\sonar-scanner/)
+    	           }
 	           }
 	       }
 	   }
