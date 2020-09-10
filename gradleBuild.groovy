@@ -4,7 +4,13 @@ pipeline {
    parameters {
         // choices are a string of newline separated values
 		// https://issues.jenkins-ci.org/browse/JENKINS-41180
-		string(name: 'PROJECT_ROOT_DIR', defaultValue: "D://Programacion//repos//Bitbucket//demojooby")
+		
+		// Unix
+	    string(name: 'PROJECT_ROOT_DIR', defaultValue: "/home//alex/Documents/ws-sts/Bitbucket/sicbo/")
+		
+		// Windows
+		//string(name: 'PROJECT_ROOT_DIR', defaultValue: "D://Programacion//repos//Bitbucket//sicbo")
+		
 		choice(
 			choices: 'true\nfalse',
 			description: 'Indica si ejecuta el stage Build',
@@ -38,12 +44,15 @@ pipeline {
     stages {
        
 	   stage('Checkout') {
-	       when {
-			   expression { params.BUILD == 'true' }
-		   }
 	       steps {
-	           cleanWs()
-    	       bat(/(robocopy ${params.PROJECT_ROOT_DIR} . -e -xd .git .gradle .settings .scannerwork target -xf .classpath .project)^& IF %ERRORLEVEL% LSS 8 exit 0 /)
+	           script {
+	               cleanWs()
+    	           if (isUnix()) {
+    	               sh "rsync -av --progress '${params.PROJECT_ROOT_DIR}' '${WORKSPACE}' --exclude .git --exclude .settings --exclude target --exclude node_modules"
+    	           } else {
+    	               bat(/(robocopy ${params.PROJECT_ROOT_DIR} . -e -xd .git .gradle .settings .scannerwork target node_modules -xf .classpath .project)^& IF %ERRORLEVEL% LSS 8 exit 0 /)
+    	           }
+	           }
 	       }
 	   }
 	   
@@ -58,8 +67,15 @@ pipeline {
 			            expression { params.TEST == 'true' }
 			        }
 			        steps {
-			            bat(/gradle clean/)
-			            bat(/gradle build/)
+			            script {
+			                if (isUnix()) {
+    			                sh "gradle clean"
+    			                sh "gradle build"
+    			            } else {
+    			                bat(/gradle clean/)
+			                    bat(/gradle build/)
+    			            }
+			            }
 			        }
 			        
 			        //post {
@@ -74,8 +90,15 @@ pipeline {
 			            expression { params.TEST == 'false' }
 			        }
 			        steps {
-			            bat(/gradle clean/)
-			            bat(/gradle build -x test/)
+			            script {
+			                if (isUnix()) {
+    			                sh "gradle clean"
+    			                sh "grad;e build -x test"
+    			            } else {
+    			                bat(/gradle clean/)
+			                    bat(/gradle build -x test/)
+    			            }
+			            }
 			        }
 			    }
 		   }
@@ -88,7 +111,11 @@ pipeline {
 	       steps {
 	           script {
     	           def scannerHome = tool 'SonarScanner'
-    	           bat(/${scannerHome}\bin\sonar-scanner/)
+    	           if (isUnix()) {
+    	               sh "'${scannerHome}'/bin/sonar-scanner"   
+    	           } else {
+    	               bat(/${scannerHome}\bin\sonar-scanner/)
+    	           }
 	           }
 	       }
 	   }
