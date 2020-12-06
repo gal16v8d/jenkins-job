@@ -6,7 +6,7 @@ pipeline {
 		// https://issues.jenkins-ci.org/browse/JENKINS-41180
 		
 		// Unix
-	    string(name: 'PROJECT_ROOT_DIR', defaultValue: "/home//alex/Documents/ws-sts/Bitbucket/activemq/")
+	    string(name: 'PROJECT_ROOT_DIR', defaultValue: "/home/alex/Documents/ws-sts/Bitbucket/activemq/")
 		string(name: 'M2_REPO', defaultValue: "/home/alex/.m2/repository/")
 		
 		// Windows
