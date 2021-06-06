@@ -13,7 +13,7 @@ node {
         jdk8Home = tool 'Jdk8'
         jdk11Home = tool 'Jdk11'
         jdk13Home = tool 'Jdk13'
-        mavenHome = tool 'Mvn-3.6.3'
+        mavenHome = tool 'Mvn-3.8.1'
         gradleHome = tool 'Gradle-6.5'
         gitHome = tool 'Git'
         nodeJSHome = tool 'NodeJs'

@@ -39,7 +39,7 @@ pipeline {
     }
     
     tools {
-        maven 'Mvn-3.6.3'
+        maven 'Mvn-3.8.1'
     }
 
     stages {
