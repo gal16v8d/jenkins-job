@@ -1,10 +1,11 @@
 node {
     def jdk8Home
     def jdk11Home
-    def jdk13Home
+    def jdk17Home
     def mavenHome
     def gradleHome
     def gitHome
+    def goHome
     def nodeJSHome
     def sonarScannerHome
     def dockerHome
@@ -12,10 +13,11 @@ node {
     stage('Preparation') {
         jdk8Home = tool 'Jdk8'
         jdk11Home = tool 'Jdk11'
-        jdk13Home = tool 'Jdk13'
-        mavenHome = tool 'Mvn-3.8.1'
+        jdk17Home = tool 'Jdk17'
+        mavenHome = tool 'Mvn-3'
         gradleHome = tool 'Gradle-6.5'
         gitHome = tool 'Git'
+        goHome = tool 'Go'
         nodeJSHome = tool 'NodeJs'
         sonarScannerHome = tool 'SonarScanner'
         dockerHome = tool 'Docker'
@@ -25,11 +27,11 @@ node {
         if (isUnix()) {
             sh "'${jdk8Home}/bin/java' -version"
             sh "'${jdk11Home}/bin/java' -version"
-            sh "'${jdk13Home}/bin/java' -version"
+            sh "'${jdk17Home}/bin/java' -version"
         } else {
             bat(/"${jdk8Home}\bin\java" -version/)
             bat(/"${jdk11Home}\bin\java" -version/)
-            bat(/"${jdk13Home}\bin\java" -version/)
+            bat(/"${jdk17Home}\bin\java" -version/)
         }
     }
     
@@ -54,6 +56,14 @@ node {
             sh "'${gitHome}/bin/git' --version"
         } else {
             bat(/"${gitHome}\bin\git" --version/)
+        }
+    }
+    
+    stage('Check Go') {
+        if (isUnix()) {
+            sh "'${goHome}/bin/go' version"
+        } else {
+            bat(/"${goHome}\bin\go" version/)
         }
     }
 
