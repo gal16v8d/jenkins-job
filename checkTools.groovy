@@ -15,7 +15,7 @@ node {
         jdk11Home = tool 'Jdk11'
         jdk17Home = tool 'Jdk17'
         mavenHome = tool 'Mvn-3'
-        gradleHome = tool 'Gradle-6.5'
+        gradleHome = tool 'Gradle-7'
         gitHome = tool 'Git'
         goHome = tool 'Go'
         nodeJSHome = tool 'NodeJs'

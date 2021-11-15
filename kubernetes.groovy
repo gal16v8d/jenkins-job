@@ -42,7 +42,7 @@ pipeline {
     }
     
     tools {
-        gradle 'G4.9'
+        gradle 'Gradle-7'
     }
 
     stages {
