@@ -6,10 +6,10 @@ pipeline {
 		// https://issues.jenkins-ci.org/browse/JENKINS-41180
 		
 		// Unix
-	    string(name: 'PROJECT_ROOT_DIR', defaultValue: "/home/alex/Documents/ws-sts/Bitbucket/sicbo/")
+	    string(name: 'PROJECT_ROOT_DIR', defaultValue: "/home/alex/Documents/ws-sts/Bitbucket/biblioteca/")
 		
 		// Windows
-		//string(name: 'PROJECT_ROOT_DIR', defaultValue: "D://Programacion//repos//Bitbucket//sicbo")
+		//string(name: 'PROJECT_ROOT_DIR', defaultValue: "D://Programacion//repos//Bitbucket//biblioteca")
 		
 		choice(
 			choices: 'true\nfalse',
